@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
+    <PackageReference Include="Microsoft.AspNetCore.HTTP" Version="2.2.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Api.Common\Api.Common.csproj" />
+    <ProjectReference Include="..\Api.Domain\Api.Domain.csproj" />
+    <ProjectReference Include="..\Api.Domain.Dto\Api.Domain.Dto.csproj" />
+  </ItemGroup>
+
+</Project>
