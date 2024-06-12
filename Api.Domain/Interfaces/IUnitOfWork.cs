@@ -6,13 +6,13 @@ namespace Api.Domain.Interfaces;
 
 public interface IUnitOfWork : IDisposable
 {
-    ICrudRepository<Commentary> CommentaryRepository { get; }
+    ICommentaryRepository CommentaryRepository { get; }
 
     IPostRepository PostRepository { get; }
 
     IUserAccountRepository UserAccountRepository { get; }
 
-    ICrudRepository<UserInfo> UserInfoRepository { get; }
+    IUserInfoRepository UserInfoRepository { get; }
 
     IRetrieveRepository<ActiveUserAccount> ActiveUserAccountRepository { get; }
 

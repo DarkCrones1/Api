@@ -106,18 +106,23 @@ public class StartUp
         services.AddScoped(typeof(ICrudRepository<>), typeof(CrudRepository<>));
         services.AddScoped(typeof(IRetrieveRepository<>), typeof(RetrieveRepository<>));
         services.AddScoped(typeof(ICatalogBaseRepository<>), typeof(CatalogBaseRepository<>));
+        services.AddScoped<ICommentaryRepository, CommentaryRepository>();
         services.AddScoped<ILocalStorageRepository, LocalStorageRepository>();
-        services.AddScoped<IUserAccountRepository, UserAccountRepository>();
         services.AddScoped<IPostRepository, PostRepository>();
+        services.AddScoped<IUserAccountRepository, UserAccountRepository>();
+        services.AddScoped<IUserInfoRepository, UserInfoRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         // Add Serivces
         services.AddScoped(typeof(ICrudService<>), typeof(CrudService<>));
         services.AddScoped(typeof(ICatalogBaseService<>), typeof(CatalogBaseService<>));
         services.AddScoped<IAuthenticationService, AuthenticationService>();
+        services.AddScoped<ICommentaryService, CommentaryService>();
+        services.AddScoped<IMiscellaneousService, MiscellaneousService>();
         services.AddScoped<ILocalStorageService, LocalStorageService>();
         services.AddScoped<IPostService, PostService>();
         services.AddScoped<IUserAccountService, UserAccountService>();
+        services.AddScoped<IUserInfoService, UserInfoService>();
         services.AddScoped<ITokenHelperService, TokenHelper>();
         services.AddHttpContextAccessor();
 

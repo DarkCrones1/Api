@@ -6,6 +6,7 @@ using Api.Common.Exceptions;
 using Api.Common.Functions;
 using Api.Common.Interfaces.Repositories;
 using Api.Common.Interfaces.Services;
+using Api.Domain.Dto.QueryFilters;
 using Api.Domain.Dto.Request.Create;
 using Api.Domain.Dto.Response;
 using Api.Domain.Entities;
@@ -31,6 +32,56 @@ public class UserAccountController : ControllerBase
         this._mapper = mapper;
         this._service = service;
         this._tokenHelper = tokenHelper;
+    }
+
+    [HttpGet]
+    [Route("")]
+    [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ApiResponse<IEnumerable<UserAccountResponseDto>>))]
+    [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(ApiResponse<IEnumerable<UserAccountResponseDto>>))]
+    [ProducesResponseType((int)HttpStatusCode.NotFound, Type = typeof(ApiResponse<IEnumerable<UserAccountResponseDto>>))]
+    public async Task<IActionResult> GetAll([FromQuery] UserAccountQueryFilter filter)
+    {
+        try
+        {
+            var entities = await _service.GetPaged(filter);
+            var dtos = _mapper.Map<IEnumerable<UserAccountResponseDto>>(entities);
+            var metaDataResponse = new MetaDataResponse(
+                entities.TotalCount,
+                entities.CurrentPage,
+                entities.PageSize
+            );
+            var response = new ApiResponse<IEnumerable<UserAccountResponseDto>>(data: dtos, meta: metaDataResponse);
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            throw new LogicBusinessException(ex);
+        }
+    }
+
+    [HttpGet]
+    [Route("{id:int}")]
+    [AllowAnonymous]
+    [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ApiResponse<IEnumerable<UserAccountDetailResponseDto>>))]
+    [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(ApiResponse<IEnumerable<UserAccountDetailResponseDto>>))]
+    [ProducesResponseType((int)HttpStatusCode.NotFound, Type = typeof(ApiResponse<IEnumerable<UserAccountDetailResponseDto>>))]
+    public async Task<IActionResult> GetById([FromRoute] int id)
+    {
+        try
+        {
+            var entity = await _service.GetById(id);
+
+            if (entity.Id <= 0)
+                return NotFound();
+
+            var dto = _mapper.Map<UserAccountDetailResponseDto>(entity);
+            var response = new ApiResponse<UserAccountDetailResponseDto>(data: dto);
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            throw new LogicBusinessException(ex);
+        }
     }
 
     [HttpPost]

@@ -19,6 +19,4 @@ public class PostService : CatalogBaseService<Post>, IPostService
         var pagedItems = PagedList<Post>.Create(result, filter.PageNumber, filter.PageSize);
         return pagedItems;
     }
-
-    
 }

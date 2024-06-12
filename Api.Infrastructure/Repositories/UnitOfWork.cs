@@ -24,13 +24,13 @@ public class UnitOfWork : IUnitOfWork
 
     private readonly IHttpContextAccessor _httpContextAccessor;
 
-    protected ICrudRepository<Commentary> _commentaryRepository;
+    protected ICommentaryRepository _commentaryRepository;
 
     protected IPostRepository _postRepository;
 
     protected IUserAccountRepository _userAccountRepository;
 
-    protected ICrudRepository<UserInfo> _userInfoRepository;
+    protected IUserInfoRepository _userInfoRepository;
 
     protected IRetrieveRepository<ActiveUserAccount> _activeUserAccountRepository;
 
@@ -50,26 +50,26 @@ public class UnitOfWork : IUnitOfWork
 
         disposed = false;
 
-        _commentaryRepository = new CrudRepository<Commentary>(_dbContext);
+        _commentaryRepository = new CommentaryRepository(_dbContext);
 
         _postRepository = new PostRepository(_dbContext);
 
         _userAccountRepository = new UserAccountRepository(_dbContext);
 
-        _userInfoRepository = new CrudRepository<UserInfo>(_dbContext);
+        _userInfoRepository = new UserInfoRepository(_dbContext);
 
         _activeUserAccountRepository = new RetrieveRepository<ActiveUserAccount>(_dbContext);
 
         _localStorageRepository = new LocalStorageRepository(_configuration, _env, _httpContextAccessor);
     }
 
-    public ICrudRepository<Commentary> CommentaryRepository => _commentaryRepository;
+    public ICommentaryRepository CommentaryRepository => _commentaryRepository;
 
     public IPostRepository PostRepository => _postRepository;
 
     public IUserAccountRepository UserAccountRepository => _userAccountRepository;
 
-    public ICrudRepository<UserInfo> UserInfoRepository => _userInfoRepository;
+    public IUserInfoRepository UserInfoRepository => _userInfoRepository;
 
     public IRetrieveRepository<ActiveUserAccount> ActiveUserAccountRepository => _activeUserAccountRepository;
 

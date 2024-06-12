@@ -8,7 +8,5 @@ public class PostResponseDto : BaseCatalogResponseDto
 
     public int UserAccountId { get; set; }
 
-    public string? UserAccounName { get; set; }
-
-    public string? FullName { get; set; }
+    public string? UserInfoName { get; set; }
 }

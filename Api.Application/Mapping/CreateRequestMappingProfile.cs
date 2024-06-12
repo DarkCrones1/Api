@@ -11,6 +11,21 @@ public class CreateRequestMappingProfile : Profile
 {
     public CreateRequestMappingProfile()
     {
+        CreateMap<CommentaryCreateRequestDto, Commentary>()
+        .ForMember(
+            dest => dest.Description,
+            opt => opt.MapFrom(src => src.Description)
+        ).ForMember(
+            dest => dest.PostId,
+            opt => opt.MapFrom(src => src.PostId)
+        ).ForMember(
+            dest => dest.CreatedDate,
+            opt => opt.MapFrom(src => DateTime.Now)
+        ).ForMember(
+            dest => dest.IsDeleted,
+            opt => opt.MapFrom(src => ValuesStatusPropertyEntity.IsNotDeleted)
+        );
+
         CreateMap<PostCreateRequestDto, Post>()
         .ForMember(
             dest => dest.Name,
