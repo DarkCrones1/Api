@@ -19,6 +19,10 @@ using Api.Common.Interfaces.Services;
 using Api.Application.Services;
 using Api.Domain.Interfaces;
 using Api.Common.Helpers;
+using Api.Domain.Interfaces.Repositories;
+using Api.Domain.Interfaces.Services;
+using AW.Infrastructure.Repositories;
+using AW.Application.Services;
 // using Api.Domain.Interfaces.Repositories;
 // using Api.Domain.Interfaces.Services;
 
@@ -102,11 +106,20 @@ public class StartUp
         services.AddScoped(typeof(ICrudRepository<>), typeof(CrudRepository<>));
         services.AddScoped(typeof(IRetrieveRepository<>), typeof(RetrieveRepository<>));
         services.AddScoped(typeof(ICatalogBaseRepository<>), typeof(CatalogBaseRepository<>));
-
+        services.AddScoped<ILocalStorageRepository, LocalStorageRepository>();
+        services.AddScoped<IUserAccountRepository, UserAccountRepository>();
+        services.AddScoped<IPostRepository, PostRepository>();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         // Add Serivces
         services.AddScoped(typeof(ICrudService<>), typeof(CrudService<>));
         services.AddScoped(typeof(ICatalogBaseService<>), typeof(CatalogBaseService<>));
+        services.AddScoped<IAuthenticationService, AuthenticationService>();
+        services.AddScoped<ILocalStorageService, LocalStorageService>();
+        services.AddScoped<IPostService, PostService>();
+        services.AddScoped<IUserAccountService, UserAccountService>();
+        services.AddScoped<ITokenHelperService, TokenHelper>();
+        services.AddHttpContextAccessor();
 
 
         // Add AutoValidator

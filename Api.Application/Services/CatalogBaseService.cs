@@ -19,6 +19,6 @@ public class CatalogBaseService<T> : CrudService<T>, ICatalogBaseService<T> wher
     {
         var typeRep = typeof(T);
 
-        return null;
+        return (ICatalogBaseRepository<T>)this._unitOfWork.PostRepository;
     }
 }

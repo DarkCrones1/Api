@@ -10,6 +10,7 @@ using Api.Common.Interfaces.Repositories;
 
 using Api.Common.Interfaces.Entities;
 using Api.Domain.Interfaces;
+using Api.Domain.Entities;
 // using Api.Domain.Entities;
 
 namespace Api.Application.Services;
@@ -29,7 +30,13 @@ public class CrudService<T> : ICrudService<T> where T : BaseEntity
     {
         var typeRep = typeof(T);
 
-        return null;
+        if (typeRep == typeof(Commentary))
+            return (ICrudRepository<T>)this._unitOfWork.CommentaryRepository;
+
+        if (typeRep == typeof(UserInfo))
+            return (ICrudRepository<T>)this._unitOfWork.UserInfoRepository;
+
+        return (ICrudRepository<T>)this._unitOfWork.UserAccountRepository;
     }
 
     public virtual async Task<int> Create(T entity)

@@ -32,4 +32,6 @@ public class SettingConfigurationFile
     }
 
     public string UrlLocalImageProfile => _configuration.GetValue<string>("DefaultValues:ImageProfileLocalStorageBaseUrl") ?? string.Empty;
+    public string UrlLocalImagePost => _configuration.GetValue<string>("DefaultValues:ImagePostLocalStorageBaseUrl") ?? string.Empty;
+    public string UrlLocalCommentaryProfile => _configuration.GetValue<string>("DefaultValues:ImageCommentaryLocalStorageBaseUrl") ?? string.Empty;
 }

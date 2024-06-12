@@ -1,13 +1,16 @@
 using Microsoft.Extensions.Configuration;
 
 using Api.Common.Interfaces.Repositories;
-// using Api.Domain.Entities;
 using Api.Domain.Interfaces;
 // using Api.Domain.Interfaces.Repositories;
 // using Api.Infrastructure.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Api.Infrastructure.Data;
+using Api.Domain.Entities;
+using Api.Infrastructure;
+using Api.Infrastructure.Repositories;
+using Api.Domain.Interfaces.Repositories;
 
 namespace AW.Infrastructure.Repositories;
 
@@ -20,6 +23,16 @@ public class UnitOfWork : IUnitOfWork
     private readonly IWebHostEnvironment _env;
 
     private readonly IHttpContextAccessor _httpContextAccessor;
+
+    protected ICrudRepository<Commentary> _commentaryRepository;
+
+    protected IPostRepository _postRepository;
+
+    protected IUserAccountRepository _userAccountRepository;
+
+    protected ICrudRepository<UserInfo> _userInfoRepository;
+
+    protected IRetrieveRepository<ActiveUserAccount> _activeUserAccountRepository;
 
     protected ILocalStorageRepository _localStorageRepository;
 
@@ -37,8 +50,28 @@ public class UnitOfWork : IUnitOfWork
 
         disposed = false;
 
+        _commentaryRepository = new CrudRepository<Commentary>(_dbContext);
+
+        _postRepository = new PostRepository(_dbContext);
+
+        _userAccountRepository = new UserAccountRepository(_dbContext);
+
+        _userInfoRepository = new CrudRepository<UserInfo>(_dbContext);
+
+        _activeUserAccountRepository = new RetrieveRepository<ActiveUserAccount>(_dbContext);
+
         _localStorageRepository = new LocalStorageRepository(_configuration, _env, _httpContextAccessor);
     }
+
+    public ICrudRepository<Commentary> CommentaryRepository => _commentaryRepository;
+
+    public IPostRepository PostRepository => _postRepository;
+
+    public IUserAccountRepository UserAccountRepository => _userAccountRepository;
+
+    public ICrudRepository<UserInfo> UserInfoRepository => _userInfoRepository;
+
+    public IRetrieveRepository<ActiveUserAccount> ActiveUserAccountRepository => _activeUserAccountRepository;
 
     public ILocalStorageRepository LocalStorageRepository => _localStorageRepository;
 
