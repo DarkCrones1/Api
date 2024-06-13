@@ -24,6 +24,21 @@ public class CommentaryRepository : CrudRepository<Commentary>, ICommentaryRepos
     {
         var query = _dbContext.Commentary.AsQueryable();
 
+        if (entity.Id > 0)
+            query = query.Where(x => x.Id == entity.Id);
+
+        if (entity.UserAccountId > 0)
+            query = query.Where(x => x.UserAccountId == entity.UserAccountId);
+
+        if (entity.PostId > 0)
+            query = query.Where(x => x.PostId == entity.PostId);
+
+        if (!string.IsNullOrEmpty(entity.Description) && !string.IsNullOrWhiteSpace(entity.Description))
+            query = query.Where(x => x.Description!.Contains(entity.Description));
+
+        if (entity.IsDeleted.HasValue)
+            query = query.Where(x => x.IsDeleted == entity.IsDeleted);
+
         return await query.ToListAsync();
     }
 }

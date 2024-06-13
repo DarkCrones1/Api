@@ -20,4 +20,16 @@ public class UserInfoService : CrudService<UserInfo>, IUserInfoService
         var pagedItems = PagedList<UserInfo>.Create(result, filter.PageNumber, filter.PageSize);
         return pagedItems;
     }
+
+    public async Task UpdateProfile(int CustomerId, string urlProfile, string userName)
+    {
+        var lastEntity = await _unitOfWork.UserInfoRepository.GetById(CustomerId);
+
+        lastEntity.ProfilePictureUrl = urlProfile;
+        lastEntity.LastModifiedDate = DateTime.Now;
+        lastEntity.LastModifiedBy = userName;
+
+        await base.Update(lastEntity);
+        await _unitOfWork.SaveChangesAsync();
+    }
 }

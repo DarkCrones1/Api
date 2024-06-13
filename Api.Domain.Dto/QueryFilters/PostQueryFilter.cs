@@ -9,7 +9,7 @@ public class PostQueryFilter : BaseCatalogQueryFilter
 
     public DateTime? MinPublicationDate { get; set; }
 
-    public DateTime MaxPublicationDate { get; set; }
+    public DateTime? MaxPublicationDate { get; set; }
 
     public int UserAccountId { get; set; }
 }

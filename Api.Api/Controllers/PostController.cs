@@ -2,6 +2,7 @@ using System.Linq.Expressions;
 using System.Net;
 using System.Security.Cryptography;
 using Api.Api.Responses;
+using Api.Common.Enumerations;
 using Api.Common.Exceptions;
 using Api.Common.Functions;
 using Api.Common.Interfaces.Repositories;
@@ -25,13 +26,15 @@ namespace Api.Api.Controllers;
 public class PostController : ControllerBase
 {
     private readonly IMapper _mapper;
+    private readonly IConfiguration _configuration;
     private readonly IPostService _service;
     private readonly ITokenHelperService _tokenHelper;
     private readonly ILocalStorageService _localStorageService;
 
-    public PostController(IMapper mapper, IPostService service, ITokenHelperService tokenHelper, ILocalStorageService localStorageService)
+    public PostController(IMapper mapper, IConfiguration configuration, IPostService service, ITokenHelperService tokenHelper, ILocalStorageService localStorageService)
     {
         this._mapper = mapper;
+        this._configuration = configuration;
         this._service = service;
         this._tokenHelper = tokenHelper;
         this._localStorageService = localStorageService;
@@ -163,6 +166,105 @@ public class PostController : ControllerBase
             entity.LastModifiedDate = DateTime.Now;
 
             await _service.Update(entity);
+            return Ok(true);
+        }
+        catch (Exception ex)
+        {
+
+            throw new LogicBusinessException(ex);
+        }
+    }
+
+    private string GetUrlBaseLocal(int type)
+    {
+        var url = type switch
+        {
+            1 => _configuration.GetValue<string>("DefaultValues:ImagePostLocalStorageBaseUrl"),
+            2 => _configuration.GetValue<string>("DefaultValues:ImageProfileLocalStorageBaseUrl"),
+            _ => _configuration.GetValue<string>("DefaultValues:ImageCommentaryLocalStorageBaseUrl"),
+        };
+        return url!;
+    }
+
+    private static LocalContainer GetLocalContainer(int value)
+    {
+        return value switch
+        {
+            1 => LocalContainer.Image_Post,
+            2 => LocalContainer.Image_Profile,
+            _ => LocalContainer.Image_Commentary
+        };
+    }
+
+    [HttpPost]
+    [Route("UploadImagePost")]
+    public async Task<IActionResult> UploadImage([FromForm] ImageCreateRequestDto requestDto)
+    {
+        try
+        {
+            var urlFile = await _localStorageService.UploadAsync(requestDto.File, LocalContainer.Image_Post, Guid.NewGuid().ToString());
+
+            string url = $"{GetUrlBaseLocal((short)LocalContainer.Image_Post)}{urlFile}";
+
+            await _service.UpdatePost(requestDto.EntityAssigmentId, url, _tokenHelper.GetUserName());
+
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+
+            throw new LogicBusinessException(ex);
+        }
+    }
+
+    [HttpPut]
+    [Route("UpdateImagePost")]
+    public async Task<IActionResult> UpdateImage([FromForm] ImageCreateRequestDto requestDto)
+    {
+        try
+        {
+            Expression<Func<Post, bool>> filter = x => x.Id == requestDto.EntityAssigmentId;
+            var existPost = await _service.Exist(filter);
+
+            if (!existPost)
+                return BadRequest("No se encontró ninguna publicación");
+
+            var entity = await _service.GetById(requestDto.EntityAssigmentId);
+
+            var urlFile = await _localStorageService.EditFileAsync(requestDto.File, LocalContainer.Image_Post, entity.ImagePostUrl!);
+
+            string url = $"{GetUrlBaseLocal((short)LocalContainer.Image_Post)}{urlFile}";
+
+            await _service.UpdatePost(requestDto.EntityAssigmentId, url, _tokenHelper.GetUserName());
+
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+
+            throw new LogicBusinessException(ex);
+        }
+    }
+
+    [HttpDelete]
+    [Route("{id:int}/DeleteImagePost")]
+    public async Task<IActionResult> DeleteImage([FromRoute] int id)
+    {
+        try
+        {
+            Expression<Func<Post, bool>> filter = x => x.Id == id;
+            var existPost = await _service.Exist(filter);
+
+            if (!existPost)
+                return BadRequest("No se encontro ninguna publicación");
+
+            var entity = await _service.GetById(id);
+            entity.LastModifiedBy = _tokenHelper.GetUserName();
+            entity.LastModifiedDate = DateTime.Now;
+            entity.IsDeleted = true;
+            entity.Id = id;
+
+            await _localStorageService.DeteleAsync(LocalContainer.Image_Post, entity.ImagePostUrl!);
             return Ok(true);
         }
         catch (Exception ex)

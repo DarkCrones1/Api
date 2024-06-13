@@ -8,4 +8,5 @@ namespace Api.Domain.Interfaces.Services;
 public interface IPostService : ICatalogBaseService<Post>
 {
     Task<PagedList<Post>> GetPaged(PostQueryFilter filter);
+    Task UpdatePost(int postId, string urlPost, string userName);
 }

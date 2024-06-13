@@ -18,5 +18,7 @@ public class PostDetailResponseDto : BaseCatalogResponseDto
 
     public string? UserInfoName { get; set; }
 
+    public string? UserInfoProfilePictureUrl { get; set; }
+
     public IEnumerable<CommentaryResponseDto> Commentary { get => _commentary; set => _commentary = value; }
 }

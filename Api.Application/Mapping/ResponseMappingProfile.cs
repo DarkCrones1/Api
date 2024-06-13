@@ -48,6 +48,7 @@ public class ResponseMappingProfile : Profile
                 var userInfo = userAccount.UserInfo.FirstOrDefault() ?? new UserInfo();
 
                 dest.UserInfoName = userInfo.FullName;
+                dest.UserInfoProfilePictureUrl = userInfo.ProfilePictureUrl;
             }
         );
 
@@ -65,6 +66,7 @@ public class ResponseMappingProfile : Profile
                 var userInfo = userAccount.UserInfo.FirstOrDefault() ?? new UserInfo();
 
                 dest.UserInfoName = userInfo.FullName;
+                dest.UserInfoProfilePictureUrl = userInfo.ProfilePictureUrl;
             }
         );
 

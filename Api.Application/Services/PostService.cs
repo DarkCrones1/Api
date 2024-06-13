@@ -19,4 +19,16 @@ public class PostService : CatalogBaseService<Post>, IPostService
         var pagedItems = PagedList<Post>.Create(result, filter.PageNumber, filter.PageSize);
         return pagedItems;
     }
+
+    public async Task UpdatePost(int postId, string urlPost, string userName)
+    {
+        var lastEntity = await _unitOfWork.PostRepository.GetById(postId);
+
+        lastEntity.ImagePostUrl = urlPost;
+        lastEntity.LastModifiedDate = DateTime.UtcNow;
+        lastEntity.LastModifiedBy = userName;
+
+        await base.Update(lastEntity);
+        await _unitOfWork.SaveChangesAsync();
+    }
 }

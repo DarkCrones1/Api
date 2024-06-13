@@ -9,4 +9,6 @@ public class PostResponseDto : BaseCatalogResponseDto
     public int UserAccountId { get; set; }
 
     public string? UserInfoName { get; set; }
+
+    public string? UserInfoProfilePictureUrl { get; set; }
 }
