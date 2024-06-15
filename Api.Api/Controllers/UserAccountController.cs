@@ -84,6 +84,19 @@ public class UserAccountController : ControllerBase
         }
     }
 
+    [HttpGet]
+    [Route("SelfUserAccount")]
+    [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ApiResponse<IEnumerable<UserAccountDetailResponseDto>>))]
+    [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(ApiResponse<IEnumerable<UserAccountDetailResponseDto>>))]
+    [ProducesResponseType((int)HttpStatusCode.NotFound, Type = typeof(ApiResponse<IEnumerable<UserAccountDetailResponseDto>>))]
+    public async Task<IActionResult> GetSelfUserAccount()
+    {
+        var userInfo = await _service.GetById(_tokenHelper.GetAccountId());
+        var dto = _mapper.Map<UserAccountDetailResponseDto>(userInfo);
+        var response = new ApiResponse<UserAccountDetailResponseDto>(data: dto);
+        return Ok(response);
+    }
+
     [HttpPost]
     [AllowAnonymous]
     [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ApiResponse<UserAccountResponseDto>))]

@@ -22,6 +22,7 @@ namespace Api.Api.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Produces("application/json")]
+[Authorize]
 public class UserInfoController : ControllerBase
 {
     private readonly IMapper _mapper;
@@ -55,6 +56,19 @@ public class UserInfoController : ControllerBase
             entities.PageSize
         );
         var response = new ApiResponse<IEnumerable<UserInfoResponseDto>>(data: dtos, meta: metaDataResponse);
+        return Ok(response);
+    }
+
+    [HttpGet]
+    [Route("SelfInfo")]
+    [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ApiResponse<IEnumerable<UserInfoResponseDto>>))]
+    [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(ApiResponse<IEnumerable<UserInfoResponseDto>>))]
+    [ProducesResponseType((int)HttpStatusCode.NotFound, Type = typeof(ApiResponse<IEnumerable<UserInfoResponseDto>>))]
+    public async Task<IActionResult> GetSelfProfile()
+    {
+        var userInfo = await _service.GetById(_tokenHelper.GetUserInfoId());
+        var dto = _mapper.Map<UserInfoResponseDto>(userInfo);
+        var response = new ApiResponse<UserInfoResponseDto>(data: dto);
         return Ok(response);
     }
 
@@ -115,15 +129,21 @@ public class UserInfoController : ControllerBase
 
     [HttpPost]
     [Route("UploadImageProfile")]
-    public async Task<IActionResult> UploadImage([FromForm] ImageCreateRequestDto requestDto)
+    public async Task<IActionResult> UploadImage([FromForm] ImageProfileCreateRequestDto requestDto)
     {
         try
         {
+            Expression<Func<UserInfo, bool>> filter = x => !string.IsNullOrEmpty(x.ProfilePictureUrl!);
+            var existImage = await _service.Exist(filter);
+
+            if (existImage)
+                return BadRequest("Por el momento solo se admite una imagen de perfil");
+
             var urlFile = await _localStorageService.UploadAsync(requestDto.File, LocalContainer.Image_Profile, Guid.NewGuid().ToString());
 
             string url = $"{GetUrlBaseLocal((short)LocalContainer.Image_Profile)}{urlFile}";
 
-            await _service.UpdateProfile(requestDto.EntityAssigmentId, url, _tokenHelper.GetUserName());
+            await _service.UpdateProfile(_tokenHelper.GetUserInfoId(), url, _tokenHelper.GetUserName());
 
             return Ok();
         }
@@ -136,23 +156,24 @@ public class UserInfoController : ControllerBase
 
     [HttpPut]
     [Route("UpdateImageProfile")]
-    public async Task<IActionResult> UpdateImage([FromForm] ImageCreateRequestDto requestDto)
+    public async Task<IActionResult> UpdateImage([FromForm] ImageProfileCreateRequestDto requestDto)
     {
         try
         {
-            Expression<Func<UserInfo, bool>> filter = x => x.Id == requestDto.EntityAssigmentId;
-            var existPost = await _service.Exist(filter);
+            Expression<Func<UserInfo, bool>> filter = x => x.Id == _tokenHelper.GetUserInfoId();
+            var exisUserInfo = await _service.Exist(filter);
 
-            if (!existPost)
+            if (!exisUserInfo)
                 return BadRequest("No se encontró ningun usuario");
 
-            var entity = await _service.GetById(requestDto.EntityAssigmentId);
+
+            var entity = await _service.GetById(_tokenHelper.GetUserInfoId());
 
             var urlFile = await _localStorageService.EditFileAsync(requestDto.File, LocalContainer.Image_Profile, entity.ProfilePictureUrl!);
 
             string url = $"{GetUrlBaseLocal((short)LocalContainer.Image_Profile)}{urlFile}";
 
-            await _service.UpdateProfile(requestDto.EntityAssigmentId, url, _tokenHelper.GetUserName());
+            await _service.UpdateProfile(_tokenHelper.GetUserInfoId(), url, _tokenHelper.GetUserName());
 
             return Ok();
         }
@@ -164,24 +185,26 @@ public class UserInfoController : ControllerBase
     }
 
     [HttpDelete]
-    [Route("{id:int}/DeleteImageProfile")]
-    public async Task<IActionResult> DeleteImage([FromRoute] int id)
+    [Route("DeleteImageProfile")]
+    public async Task<IActionResult> DeleteImage()
     {
         try
         {
-            Expression<Func<UserInfo, bool>> filter = x => x.Id == id;
+            Expression<Func<UserInfo, bool>> filter = x => x.Id == _tokenHelper.GetUserInfoId();
             var existPost = await _service.Exist(filter);
 
             if (!existPost)
                 return BadRequest("No se encontro ningun usuario");
 
-            var entity = await _service.GetById(id);
+            var entity = await _service.GetById(_tokenHelper.GetUserInfoId());
             entity.LastModifiedBy = _tokenHelper.GetUserName();
             entity.LastModifiedDate = DateTime.Now;
-            entity.IsDeleted = true;
-            entity.Id = id;
+            entity.IsDeleted = false;
+            entity.Id = _tokenHelper.GetUserInfoId();
 
-            await _localStorageService.DeteleAsync(LocalContainer.Image_Post, entity.ProfilePictureUrl!);
+            await _localStorageService.DeteleAsync(LocalContainer.Image_Profile, entity.ProfilePictureUrl!);
+            entity.ProfilePictureUrl = null;
+            await _service.Update(entity);
             return Ok(true);
         }
         catch (Exception ex)

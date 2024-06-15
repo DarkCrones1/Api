@@ -16,6 +16,8 @@ public class UserAccountDetailResponseDto
 
     public int UserInfoId { get; set; }
 
+    public string? UserInfoProfilePictureUrl { get; set; }
+
     public string UserName { get; set; } = string.Empty;
 
     public string Email { get; set; } = string.Empty;
@@ -25,6 +27,10 @@ public class UserAccountDetailResponseDto
     public string Phone { get; set; } = string.Empty;
 
     public string CellPhone { get; set; } = string.Empty;
+
+    public string? GenderName { get; set; }
+
+    public DateTime? BirthDate { get; set; }
 
     public bool IsDeleted { get; set; }
 

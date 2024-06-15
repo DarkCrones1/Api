@@ -8,5 +8,5 @@ namespace Api.Domain.Interfaces.Services;
 public interface IUserInfoService : ICrudService<UserInfo>
 {
     Task<PagedList<UserInfo>> GetPaged(UserInfoQueryFilter filter);
-    Task UpdateProfile(int customerId, string urlProfile, string userName);
+    Task UpdateProfile(int userInfoId, string urlProfile, string userName);
 }

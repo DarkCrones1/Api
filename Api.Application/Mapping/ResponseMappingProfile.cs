@@ -2,6 +2,7 @@
 using Api.Common.Helpers;
 using Api.Domain.Dto.Response;
 using Api.Domain.Entities;
+using Api.Domain.Enumerations;
 using AutoMapper;
 
 namespace Api.Application.Mapping;
@@ -30,6 +31,7 @@ public class ResponseMappingProfile : Profile
                 dest.UserInfoName = userInfo.FullName;
                 dest.PostId = src.PostId;
                 dest.PostName = post.Name;
+                dest.UserInfoProfilePictureUrl = userInfo.ProfilePictureUrl;
 
             }
         );
@@ -100,9 +102,12 @@ public class ResponseMappingProfile : Profile
             {
                 var userInfo = src.UserInfo.FirstOrDefault() ?? new UserInfo();
                 dest.UserInfoId = userInfo.Id;
+                dest.UserInfoProfilePictureUrl = userInfo.ProfilePictureUrl;
                 dest.FullName = userInfo.FullName;
                 dest.Phone = userInfo.Phone!;
                 dest.CellPhone = userInfo.CellPhone;
+                dest.BirthDate = userInfo.BirthDate;
+                dest.GenderName = EnumHelper.GetDescription<Gender>((Gender)userInfo.Gender!);
             }
         );
 

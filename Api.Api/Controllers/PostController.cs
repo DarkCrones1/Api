@@ -265,6 +265,7 @@ public class PostController : ControllerBase
             entity.Id = id;
 
             await _localStorageService.DeteleAsync(LocalContainer.Image_Post, entity.ImagePostUrl!);
+            await _service.Update(entity);
             return Ok(true);
         }
         catch (Exception ex)

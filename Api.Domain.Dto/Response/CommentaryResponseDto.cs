@@ -10,6 +10,8 @@ public class CommentaryResponseDto
 
     public string? UserInfoName { get; set; }
 
+    public string? UserInfoProfilePictureUrl { get; set; }
+
     public int PostId { get; set; }
 
     public string PostName { get; set; } = string.Empty;
