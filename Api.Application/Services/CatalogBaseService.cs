@@ -2,6 +2,8 @@ using Api.Common.Entities;
 using Api.Common.Interfaces.Entities;
 using Api.Common.Interfaces.Repositories;
 using Api.Common.Interfaces.Services;
+using Api.Domain.Entities;
+
 // using Api.Domain.Entities;
 using Api.Domain.Interfaces;
 
@@ -18,6 +20,9 @@ public class CatalogBaseService<T> : CrudService<T>, ICatalogBaseService<T> wher
     protected override ICatalogBaseRepository<T> GetRepository()
     {
         var typeRep = typeof(T);
+
+        if (typeRep == typeof(Moto))
+            return (ICatalogBaseRepository<T>)this._unitOfWork.MotoRepository;
 
         return (ICatalogBaseRepository<T>)this._unitOfWork.PostRepository;
     }

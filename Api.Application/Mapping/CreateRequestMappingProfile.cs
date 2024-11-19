@@ -62,6 +62,27 @@ public class CreateRequestMappingProfile : Profile
             opt => opt.MapFrom(src => src.Email)
         );
 
+        CreateMap<MotoCreateRequestDto, Moto>()
+        .ForMember(
+            dest => dest.Code,
+            opt => opt.MapFrom(src => Guid.NewGuid())
+        ).ForMember(
+            dest => dest.CreatedDate,
+            opt => opt.MapFrom(src => DateTime.Now)
+        ).ForMember(
+            dest => dest.PublicationDate,
+            opt => opt.MapFrom(src => DateTime.Now)
+        ).ForMember(
+            dest => dest.IsDeleted,
+            opt => opt.MapFrom(src => ValuesStatusPropertyEntity.IsNotDeleted)
+        ).ForMember(
+            dest => dest.AvailableStatus,
+            opt => opt.MapFrom(src => (short)MotoStatus.Available)
+        ).ForMember(
+            dest => dest.CreatedBy,
+            opt => opt.MapFrom(src => "Admin")
+        );
+
         CreateMap<UserAccountCreateRequestDto, UserInfo>()
         .AfterMap(
             (src, dest) =>

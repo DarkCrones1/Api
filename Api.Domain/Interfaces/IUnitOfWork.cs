@@ -14,6 +14,8 @@ public interface IUnitOfWork : IDisposable
 
     IUserInfoRepository UserInfoRepository { get; }
 
+    ICatalogBaseRepository<Moto> MotoRepository { get; }
+
     IRetrieveRepository<ActiveUserAccount> ActiveUserAccountRepository { get; }
 
     ILocalStorageRepository LocalStorageRepository { get; }

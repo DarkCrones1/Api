@@ -32,6 +32,8 @@ public class UnitOfWork : IUnitOfWork
 
     protected IUserInfoRepository _userInfoRepository;
 
+    protected ICatalogBaseRepository<Moto> _motoRepository;
+
     protected IRetrieveRepository<ActiveUserAccount> _activeUserAccountRepository;
 
     protected ILocalStorageRepository _localStorageRepository;
@@ -58,6 +60,8 @@ public class UnitOfWork : IUnitOfWork
 
         _userInfoRepository = new UserInfoRepository(_dbContext);
 
+        _motoRepository = new CatalogBaseRepository<Moto>(_dbContext);
+
         _activeUserAccountRepository = new RetrieveRepository<ActiveUserAccount>(_dbContext);
 
         _localStorageRepository = new LocalStorageRepository(_configuration, _env, _httpContextAccessor);
@@ -70,6 +74,8 @@ public class UnitOfWork : IUnitOfWork
     public IUserAccountRepository UserAccountRepository => _userAccountRepository;
 
     public IUserInfoRepository UserInfoRepository => _userInfoRepository;
+
+    public ICatalogBaseRepository<Moto> MotoRepository => _motoRepository;
 
     public IRetrieveRepository<ActiveUserAccount> ActiveUserAccountRepository => _activeUserAccountRepository;
 

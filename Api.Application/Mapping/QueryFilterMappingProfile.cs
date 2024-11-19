@@ -11,6 +11,8 @@ public class QueryFilterMappingProfile : Profile
     {
         CreateMap<Post, PostQueryFilter>();
 
+        CreateMap<MotoQueryFilter, Moto>();
+
         CreateMap<UserAccount, UserAccountQueryFilter>();
 
 

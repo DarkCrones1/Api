@@ -25,6 +25,8 @@ public partial class ApiDbContext : DbContext
 
     public virtual DbSet<ActiveUserAccount> ActiveUserAccount{ get; set; }
 
+    public virtual DbSet<Moto> Moto { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseSqlServer(

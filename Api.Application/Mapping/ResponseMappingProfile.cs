@@ -72,6 +72,21 @@ public class ResponseMappingProfile : Profile
             }
         );
 
+        CreateMap<Moto, MotoResponseDto>()
+        .ForMember(
+            dest => dest.Status,
+            opt => opt.MapFrom(src => StatusDeletedHelper.GetStatusDeletedEntity(src.IsDeleted))
+        ).ForMember(
+            dest => dest.IsActive,
+            opt => opt.MapFrom(src => !src.IsDeleted)
+        ).ForMember(
+            dest => dest.AvailableStatus,
+            opt => opt.MapFrom(src => src.AvailableStatus)
+        ).ForMember(
+            dest => dest.AvailableStatusName,
+            opt => opt.MapFrom(src => EnumHelper.GetDescription<MotoStatus>((MotoStatus)src.AvailableStatus))
+        );
+
         CreateMap<UserAccount, UserAccountResponseDto>()
         .ForMember(
             dest => dest.UserName,
